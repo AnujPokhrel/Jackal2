@@ -1,0 +1,2 @@
+barn_challenge:jackal_helper
+-DCATKIN_DEVEL_PREFIX=/home/vader/jackal2/devel -DCMAKE_INSTALL_PREFIX=/home/vader/jackal2/install -G Unix Makefiles

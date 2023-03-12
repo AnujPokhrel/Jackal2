@@ -1,0 +1,8 @@
+prefix=/home/vader/jackal2/install
+
+Name: barn_challenge
+Description: Description of barn_challenge
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
