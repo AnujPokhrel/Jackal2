@@ -41,6 +41,7 @@ class messageClass():
         self.angle_min = None
         self.should_max_speed = False
         self.max_speed_started = time.time()
+        self.brake_released = True
 
 def distance(point1,point2):
     point1 = np.array(point1)
@@ -57,22 +58,31 @@ def callback(msg):
     whats_in_front = np.asarray(msg.ranges[300:420])
     nearest_obs = np.min(whats_in_front)
     current_time = time.time()
-    print(f"nearest obs: {nearest_obs} and type: {type(nearest_obs)}")
+    # if nearest_obs == np.inf:
+    #     print(f"nearest obs: {nearest_obs} and type: {type(nearest_obs)}")
+    #     print(f"message should max speed: {message.should_max_speed}")
+    #     print(f"message brake released: {message.brake_released}")
 
-    if nearest_obs > 2.50 and (current_time - message.max_speed_started) < 3.0:
+    if nearest_obs > 2.50 and message.brake_released:
         #set message.max_speed_started to current time only if it was false before
         if message.should_max_speed == False:
             message.max_speed_started = time.time()
-        
-        print("#########Prinitng whats in front#########")
-        print(f"no obstacle in front and time elapsed is : {current_time - message.max_speed_started}" )
-        message.should_max_speed = True
-        print(f"should max speed: {message.should_max_speed}")
+            message.should_max_speed = True
 
-    elif ((message.should_max_speed == True) and (nearest_obs < 2.50)) or ((current_time - message.max_speed_started)) > 3.0:
+        if (current_time - message.max_speed_started) > 3.0:
+            message.should_max_speed = False
+            message.brake_released = False
+
+    elif nearest_obs < 2.50 :
         message.should_max_speed = False
-        print("obsacle in front/ time elapsed is more 3 seconds")
-        print(f"should max speed: {message.should_max_speed}")
+        # print("obsacle in front/ time elapsed is more 3 seconds")
+        # print(f"should max speed: {message.should_max_speed}")
+        message.brake_released = True
+    
+    # edge case
+    # if nearest_obs == np.inf and message.brake_released == False and message.should_max_speed == False:
+    #     message.should_max_speed = True
+    #     message.max_speed_started = time.time()
 
 
         
